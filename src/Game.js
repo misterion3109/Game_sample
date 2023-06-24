@@ -542,7 +542,7 @@ Game.onload = function() {
     Game.ship.axes.y = 0;
   });
 
-  DE.Inputs.on('keyDown', 'fire', function() {
+  DE.Inputs.on('keyDown', 'fire', function() { 
     Game.ship.addAutomatism('fire', 'fire', { interval: 350 });
   });
   DE.Inputs.on('keyUp', 'fire', function() {

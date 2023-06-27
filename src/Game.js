@@ -90,12 +90,12 @@ Game.onload = function() {
   // };
 
   // var mc = new PIXI.extras.AnimatedSprite(textureArray);
-  Game.alien = new DE.GameObject({
+  Game.asteroid = new DE.GameObject({
     x: 850,
     y: 250,
     scale: 0.3,
     rotation : 10,
-    
+    automatisms: [['rotate', 'rotate', { value1: -0.07 }]],
     renderers: [
       new  DE.SpriteRenderer({spriteName: "asteroid"}),
     ]
@@ -133,45 +133,45 @@ Game.onload = function() {
     checkInputs: function() {
       this.translate({ x: this.axes.x * 2, y: this.axes.y * 2 });
     },
-    automatisms: [['checkInputs', 'checkInputs']],
-    gameObjects: [
-      new DE.GameObject({
-        x: 150,
-        scale: 0.5,
-        automatisms: [['rotate', 'rotate', { value1: -0.07 }]],
-        gameObjects: [
-          new DE.GameObject({
-            x: 250,
-            scale: 2,
-            renderer: new DE.SpriteRenderer({ spriteName: 'player-bullet' }),
-          }),
-          new DE.GameObject({
-            x: -250,
-            scale: 2,
-            rotation: Math.PI,
-            renderer: new DE.SpriteRenderer({
-              spriteName: 'player-bullet',
-              loop: true,
-            }),
-          }),
-          // this object is moving in local coords only
-          new DE.GameObject({
-            y: -250,
-            scale: 2,
-            rotation: Math.PI,
-            renderer: new DE.SpriteRenderer({
-              spriteName: 'player-bullet',
-              loop: true,
-            }),
-            getCorrectMoveTo: function() {
-              // console.log( this.y, this.getWorldPos().y )
-              this.moveTo({ y: -this.y }, 500, null, null, true);
-            },
-            automatisms: [['moveTo', 'getCorrectMoveTo', { interval: 550 }]],
-          }),
-        ],
-      }),
-    ],
+     automatisms: [['checkInputs', 'checkInputs']],
+    // gameObjects: [
+    //   new DE.GameObject({
+    //     x: 150,
+    //     scale: 0.5,
+    //     automatisms: [['rotate', 'rotate', { value1: -0.07 }]],
+    //     gameObjects: [
+    //       new DE.GameObject({
+    //         x: 250,
+    //         scale: 2,
+    //         renderer: new DE.SpriteRenderer({ spriteName: 'player-bullet' }),
+    //       }),
+    //       new DE.GameObject({
+    //         x: -250,
+    //         scale: 2,
+    //         rotation: Math.PI,
+    //         renderer: new DE.SpriteRenderer({
+    //           spriteName: 'player-bullet',
+    //           loop: true,
+    //         }),
+    //       }),
+    //       // this object is moving in local coords only
+    //       new DE.GameObject({
+    //         y: -250,
+    //         scale: 2,
+    //         rotation: Math.PI,
+    //         renderer: new DE.SpriteRenderer({
+    //           spriteName: 'player-bullet',
+    //           loop: true,
+    //         }),
+    //         getCorrectMoveTo: function() {
+    //           // console.log( this.y, this.getWorldPos().y )
+    //           this.moveTo({ y: -this.y }, 500, null, null, true);
+    //         },
+    //         automatisms: [['moveTo', 'getCorrectMoveTo', { interval: 900 }]],
+    //       }),
+    //     ],
+    //   }),
+    // ],
   });
 
   Game.ship.fire = function() {
@@ -504,7 +504,7 @@ Game.onload = function() {
 
   Game.scene.add(
     Game.ship,
-    Game.alien,
+    Game.asteroid,
    // Game.ship2,
     Game.heart1,
     Game.heart2,

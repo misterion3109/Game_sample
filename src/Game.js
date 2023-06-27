@@ -80,71 +80,63 @@ Game.onload = function() {
   
   Game.ship;
   
-  Game.asteroid = new DE.GameObject({
-    x: 850,
-    y: 250,
-    scale: 0.3,
-    
-    automatisms: [
-      ['translateY', 'translateY', { value1: 2  }]
-    ],
-    renderers: [
-      new  DE.SpriteRenderer({spriteName: "asteroid"}),
-    ]
-    
-  });
-  // Déclaration du tableau d'astéroïdes
-  const asteroidArray = [];
+  Game.instantiateRandomAsteroid = function() {
+    var minX = 180;
+    var maxX = 1800;
+    var randomX = Math.random() * (maxX - minX) + minX;
   
-  Game.asteroid.instantiateAndRemoveObject = function(bullet) {
-    setTimeout(() => {
-      // Instanciation de l'astéroïde
-      const newAsteroid = new Game.asteroid();
-      
-      // Ajout de l'astéroïde au tableau
-      asteroidArray.push(newAsteroid);
-      
-      // Vérification de la collision avec la balle
-      for (let i = 0; i < asteroidArray.length; i++) {
-        const currentAsteroid = asteroidArray[i];
-        
-        debug(asteroidArray.values);
-        // Vérifier la collision entre la balle et l'astéroïde actuel
-        if (checkCollision(bullet, currentAsteroid)) {
-          // Supprimer l'astéroïde du tableau
-          asteroidArray.splice(i, 1);
-          break; // Sortir de la boucle une fois l'astéroïde supprimé
-        }
-      }
-    }, 2000); // Délai de 2 secondes avant chaque instance d'astéroïde
-    console.log('salut')
-    Game.scene.add(newAsteroid);
+    var asteroid = new DE.GameObject({
+      x: randomX,
+      y: 250,
+      scale: 0.3,
+      automatisms: [
+        ['translateY', 'translateY', { value1: 2 }]
+      ],
+      renderers: [
+        new DE.SpriteRenderer({ spriteName: "asteroid" })
+      ]
+    });
+  
+    Game.scene.add(asteroid);
+  
+    // Détruire l'astéroïde après 3 secondes
+    setTimeout(function() {
+      Game.scene.remove(asteroid);
+    }, 6000);
   };
   
-  function checkCollision(bullet, asteroid) {
-    // Obtenez les positions de la balle et de l'astéroïde
-    const bulletX = bullet.x;
-    const bulletY = bullet.y;
-    const asteroidX = asteroid.x;
-    const asteroidY = asteroid.y;
+  // Appeler la fonction Game.instantiateRandomAsteroid pour la première fois
+  Game.instantiateRandomAsteroid();
   
-    // Vérifiez si les deux objets se chevauchent
-    if (
-      bulletX < asteroidX + asteroid.width &&
-      bulletX + bullet.width > asteroidX &&
-      bulletY < asteroidY + asteroid.height &&
-      bulletY + bullet.height > asteroidY
-    ) {
-      // Collision détectée
-      return true;
-    }
+  // Appeler la fonction Game.instantiateRandomAsteroid toutes les 2 secondes à partir de la deuxième fois
+  setInterval(function() {
+    Game.instantiateRandomAsteroid();
+  }, 2000);
   
-    // Pas de collision
-    return false;
-  }
+  // function checkCollision(bullet, asteroid) {
+  //   // Obtenez les positions de la balle et de l'astéroïde
+  //   const bulletX = bullet.x;
+  //   const bulletY = bullet.y;
+  //   const asteroidX = asteroid.x;
+  //   const asteroidY = asteroid.y;
+  
+  //   // Vérifiez si les deux objets se chevauchent
+  //   if (
+  //     bulletX < asteroidX + asteroid.width &&
+  //     bulletX + bullet.width > asteroidX &&
+  //     bulletY < asteroidY + asteroid.height &&
+  //     bulletY + bullet.height > asteroidY
+  //   ) {
+  //     // Collision détectée
+  //     return true;
+  //   }
+  
+  //   // Pas de collision
+  //   return false;
+  // }
   
   Game.ship = new DE.GameObject({
-    x: 960,
+    x: 950,
     y: 940,
     scale: 1,
     renderers: [

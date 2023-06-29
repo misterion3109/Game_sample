@@ -174,21 +174,21 @@ Game.onload = function() {
   };
   
   function collisionBulletAsteroid(bullet, asteroid) {
-    const bulletX = Game.scene(bullet.x); // Position x de la balle
-    const bulletY = Game.scene(bullet.y); // Position y de la balle
-    const bulletRadius = Game.scene(bullet.renderers[0].radius); // Rayon de la balle
-    
-    const asteroidX = Game.scene(asteroid.x); // Position x de l'astéroïde
-    const asteroidY = Game.scene(asteroid.x); // Position y de l'astéroïde
-    const asteroidRadius = Game.scene(asteroid.render[0].radius); // Rayon de l'astéroïde
-    
+    const bulletX = bullet.x; // Position x de la balle
+    const bulletY = bullet.y; // Position y de la balle
+    const bulletRadius = bullet.renderers[0].radius; // Rayon de la balle
+  
+    const asteroidX = asteroid.x; // Position x de l'astéroïde
+    const asteroidY = asteroid.y; // Position y de l'astéroïde
+    const asteroidRadius = asteroid.renderers[0].radius; // Rayon de l'astéroïde
+  
     const distance = Math.sqrt(
       (bulletX - asteroidX) ** 2 + (bulletY - asteroidY) ** 2
       ); // Calcul de la distance entre la balle et l'astéroïde
       
       if (distance <= bulletRadius + asteroidRadius) {
         // Collision détectée
-        Game.scene.remove(Game.scene(asteroid));
+        Game.scene.remove(asteroid);
         collisionBulletAsteroid(bullet, asteroid);
       }
     }

@@ -1,9 +1,9 @@
 /**
-* Author
- @Inateno / http://inateno.com / http://dreamirl.com
+ * Author
+@Inateno / http://inateno.com / http://dreamirl.com
 
 * ContributorsList
- @Inateno
+@Inateno
 
 ***
 simple Game declaration
@@ -43,7 +43,7 @@ Game.onload = function() {
   
   // scene
   Game.scene = new DE.Scene();
-
+  
   // don't do this because DisplayObject bounds is not set to the render size but to the objects inside the scene
   // scene.interactive = true;
   // scene.click = function()
@@ -62,7 +62,7 @@ Game.onload = function() {
       Game.targetPointer.moveTo(pos, 100);
     };
     Game.camera.pointerdown = function(pos, e) {
-      Game.ship.gameObjects[0].moveTo(Game.targetPointer, 500);
+     // Game.ship.gameObjects[0].moveTo(Game.targetPointer, 500);
       // Game.targetPointer.shake( 10, 10, 200 );
       Game.targetPointer.renderer.setBrightness([1, 0]);
     };
@@ -75,65 +75,45 @@ Game.onload = function() {
     
     Game.targetPointer = new DE.GameObject({
       zindex: 500,
-    renderer: new DE.SpriteRenderer({ spriteName: 'target', scale: 0.3 }),
-  });
-  
-  Game.ship;
-  
-  Game.instantiateRandomAsteroid = function() {
-    var minX = 180;
-    var maxX = 1800;
-    var randomX = Math.random() * (maxX - minX) + minX;
-  
-    var asteroid = new DE.GameObject({
-      x: randomX,
-      y: 250,
-      scale: 0.3,
-      automatisms: [
-        ['translateY', 'translateY', { value1: 2 }]
-      ],
-      renderers: [
+      renderer: new DE.SpriteRenderer({ spriteName: 'target', scale: 0.3 }),
+    });
+    
+    Game.ship;
+    
+    Game.instantiateRandomAsteroid = function() {
+       //création d'un axe X aléatoire pour chaque instances
+      var minX = 180;
+      var maxX = 1800;
+      var randomX = Math.random() * (maxX - minX) + minX;
+      //création de l'objets avec une coordonée X aléatoire
+      var asteroid = new DE.GameObject({
+        x: randomX,
+        y: 250,
+        scale: 0.3,
+        automatisms: [
+          ['translateY', 'translateY', { value1: 2 }]
+        ],
+        renderers: [
         new DE.SpriteRenderer({ spriteName: "asteroid" })
       ]
     });
-  
+    
     Game.scene.add(asteroid);
-  
-    // Détruire l'astéroïde après 3 secondes
+    
+    // Détruire l'astéroïde après quelques secondes réglables
     setTimeout(function() {
       Game.scene.remove(asteroid);
-    }, 6000);
+    }, 6500);
   };
   
-  // Appeler la fonction Game.instantiateRandomAsteroid pour la première fois
+  // Appeler la fonction pour la première fois
   Game.instantiateRandomAsteroid();
   
-  // Appeler la fonction Game.instantiateRandomAsteroid toutes les 2 secondes à partir de la deuxième fois
+  // Appeler la fonction toutes les 2 secondes à partir de la deuxième fois
   setInterval(function() {
     Game.instantiateRandomAsteroid();
   }, 2000);
   
-  // function checkCollision(bullet, asteroid) {
-  //   // Obtenez les positions de la balle et de l'astéroïde
-  //   const bulletX = bullet.x;
-  //   const bulletY = bullet.y;
-  //   const asteroidX = asteroid.x;
-  //   const asteroidY = asteroid.y;
-  
-  //   // Vérifiez si les deux objets se chevauchent
-  //   if (
-  //     bulletX < asteroidX + asteroid.width &&
-  //     bulletX + bullet.width > asteroidX &&
-  //     bulletY < asteroidY + asteroid.height &&
-  //     bulletY + bullet.height > asteroidY
-  //   ) {
-  //     // Collision détectée
-  //     return true;
-  //   }
-  
-  //   // Pas de collision
-  //   return false;
-  // }
   
   Game.ship = new DE.GameObject({
     x: 950,
@@ -167,10 +147,9 @@ Game.onload = function() {
     checkInputs: function() {
       this.translate({ x: this.axes.x * 2, y: this.axes.y * 2 });
     },
-     automatisms: [['checkInputs', 'checkInputs']],
-
+    automatisms: [['checkInputs', 'checkInputs']],
+    
   });
-
   Game.ship.fire = function() {
     DE.Save.save('fire', DE.Save.get('fire') + 1 || 1);
     DE.Audio.fx.play('piew');
@@ -181,124 +160,94 @@ Game.onload = function() {
       renderer: new DE.SpriteRenderer({ spriteName: 'player-bullet' }),
     });
     bullet.addAutomatism('translateY', 'translateY', { value1: -6 });
-     //bullet.moveTo( { z: 10 }, 2000 );
-     //bullet.addAutomatism( "rotate", "rotate", { value1: Math.random() * 0.1 } );
-     //bullet.addAutomatism( "inverseAutomatism", "inverseAutomatism", { value1: "rotate", interval: 100 } );
+    //bullet.moveTo( { z: 10 }, 2000 );
+    //bullet.addAutomatism( "rotate", "rotate", { value1: Math.random() * 0.1 } );
+    //bullet.addAutomatism( "inverseAutomatism", "inverseAutomatism", { value1: "rotate", interval: 100 } );
     bullet.addAutomatism('askToKill', 'askToKill', {
       interval: 3000,
       persistent: false,
     });
-
+    
     console.log('fired in total ' + DE.Save.get('fire') + ' times');
     Game.scene.add(bullet);
+    
   };
-
-  Game.heart1 = new DE.GameObject({
-    x: 1600,
-    y: 100,
-    zindex: 10,
-    renderer: new DE.TextureRenderer({ spriteName: 'heart' }),
-  });
-  Game.heart2 = new DE.GameObject({
-    x: 1700,
-    y: 100,
-    zindex: 10,
-    renderer: new DE.TextureRenderer({
-      spriteName: 'heart',
-      width: 50,
-      height: 20,
-    }),
-  });
-
-  var rectangle = new DE.GameObject({
-    x: 800,
-    y: 300,
-    interactive: true,
-    renderers: [
-      new DE.RectRenderer(40, 70, '0xFFFF00', {
-        lineStyle: [4, '0xFF3300', 1],
-        fill: true,
-        x: -20,
-        y: -35,
+  
+  function collisionBulletAsteroid(bullet, asteroid) {
+    const bulletX = Game.scene(bullet.x); // Position x de la balle
+    const bulletY = Game.scene(bullet.y); // Position y de la balle
+    const bulletRadius = Game.scene(bullet.renderers[0].radius); // Rayon de la balle
+    
+    const asteroidX = Game.scene(asteroid.x); // Position x de l'astéroïde
+    const asteroidY = Game.scene(asteroid.x); // Position y de l'astéroïde
+    const asteroidRadius = Game.scene(asteroid.render[0].radius); // Rayon de l'astéroïde
+    
+    const distance = Math.sqrt(
+      (bulletX - asteroidX) ** 2 + (bulletY - asteroidY) ** 2
+      ); // Calcul de la distance entre la balle et l'astéroïde
+      
+      if (distance <= bulletRadius + asteroidRadius) {
+        // Collision détectée
+        Game.scene.remove(Game.scene(asteroid));
+        collisionBulletAsteroid(bullet, asteroid);
+      }
+    }
+    
+    Game.heart1 = new DE.GameObject({
+      x: 1600,
+      y: 100,
+      zindex: 10,
+      renderer: new DE.TextureRenderer({ spriteName: 'heart' }),
+    });
+    Game.heart2 = new DE.GameObject({
+      x: 1700,
+      y: 100,
+      zindex: 10,
+      renderer: new DE.TextureRenderer({
+        spriteName: 'heart',
+        width: 50,
+        height: 20,
       }),
-      new DE.RectRenderer(40, 70, '0xF0F0F0', {
-        lineStyle: [4, '0xFF3300', 1],
-        fill: true,
-        x: -20,
-        y: -35,
-        visible: false,
-      }),
-    ],
-    pointerover: function() {
-      this.renderers[1].visible = true;
-      console.log('mouse over');
-    },
-    pointerout: function() {
-      this.renderers[1].visible = false;
-      console.log('mouse out');
-    },
-  });
-  var rectangle2 = new DE.GameObject({
-    x: 850,
-    y: 300,
-    renderer: new DE.RectRenderer(40, 70, '0xDDF0CC', {
-      lineStyle: [4, '0x00F30D', 10],
-      x: -20,
-      y: -35,
-    }),
-  });
-
-  var customShape = new DE.GameObject({
-    x: 900,
-    y: 300,
-    renderer: new DE.GraphicRenderer(
-      [
-        { beginFill: '0x66CCFF' },
-        { drawRect: [0, 0, 50, 50] },
-        { endFill: [] },
-      ],
-      { x: -25, y: -25 },
-    ),
-  });
-  Game.shapes = {
-    customShape: customShape,
-    rectangle: rectangle,
-    rectangle2: rectangle2,
-  };
-
-  Game.scene.add(
-    Game.ship,
-    Game.asteroid,
-    Game.heart1,
-    Game.heart2,
-    Game.targetPointer,
-  );
-
-  DE.Inputs.on('keyDown', 'left', function() {
-    Game.ship.axes.x = -4;
-  });
-  DE.Inputs.on('keyDown', 'right', function() {
-    Game.ship.axes.x = 4;
-  });
-  DE.Inputs.on('keyUp', 'right', function() {
-    Game.ship.axes.x = 0;
-  });
-  DE.Inputs.on('keyUp', 'left', function() {
-    Game.ship.axes.x = 0;
-  });
-
-  DE.Inputs.on('keyDown', 'up', function() {
-    Game.ship.axes.y = -2;
-  });
-  DE.Inputs.on('keyDown', 'down', function() {
-    Game.ship.axes.y = 2;
-  });
-  DE.Inputs.on('keyUp', 'down', function() {
-    Game.ship.axes.y = 0;
-  });
-  DE.Inputs.on('keyUp', 'up', function() {
-    Game.ship.axes.y = 0;
-  });
+    });
+    
+    var customShape = new DE.GameObject({
+      x: 900,
+      y: 300,
+      renderer: new DE.GraphicRenderer(
+        [
+          { beginFill: '0x66CCFF' },
+          { drawRect: [0, 0, 50, 50] },
+          { endFill: [] },
+        ],
+        { x: -25, y: -25 },
+        ),
+      });
+      Game.shapes = {
+        customShape: customShape,
+       
+      };
+      
+      Game.scene.add(
+        Game.ship,
+        
+        Game.heart1,
+        Game.heart2,
+        Game.targetPointer,
+        );
+        
+        DE.Inputs.on('keyDown', 'left', function() {
+          Game.ship.axes.x = -4;
+        });
+        DE.Inputs.on('keyDown', 'right', function() {
+          Game.ship.axes.x = 4;
+        });
+        DE.Inputs.on('keyUp', 'right', function() {
+          Game.ship.axes.x = 0;
+        });
+        DE.Inputs.on('keyUp', 'left', function() {
+          Game.ship.axes.x = 0;
+        });
+        
 
   DE.Inputs.on('keyDown', 'fire', function() { 
     Game.ship.addAutomatism('fire', 'fire', { interval: 350 });

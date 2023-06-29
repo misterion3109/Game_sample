@@ -86,7 +86,7 @@ Game.onload = function() {
       var maxX = 1800;
       var randomX = Math.random() * (maxX - minX) + minX;
       //création de l'objets avec une coordonée X aléatoire
-      var asteroid = new DE.GameObject({
+       var asteroid = new DE.GameObject({
         x: randomX,
         y: 250,
         scale: 0.3,
@@ -106,10 +106,10 @@ Game.onload = function() {
     }, 6500);
   };
   
-  // Appeler la fonction pour la première fois
+  // Appele de la fonction pour la première fois
   Game.instantiateRandomAsteroid();
   
-  // Appeler la fonction toutes les 2 secondes à partir de la deuxième fois
+  // Appele de la fonction toutes les 2 secondes
   setInterval(function() {
     Game.instantiateRandomAsteroid();
   }, 2000);
@@ -153,7 +153,7 @@ Game.onload = function() {
   Game.ship.fire = function() {
     DE.Save.save('fire', DE.Save.get('fire') + 1 || 1);
     DE.Audio.fx.play('piew');
-    var bullet = new DE.GameObject({
+     var bullet = new DE.GameObject({
       x: this.x,
       y: this.y,
       rotation: this.rotation,
@@ -174,25 +174,32 @@ Game.onload = function() {
   };
   
   function collisionBulletAsteroid(bullet, asteroid) {
-    const bulletX = bullet.x; // Position x de la balle
-    const bulletY = bullet.y; // Position y de la balle
-    const bulletRadius = bullet.renderers[0].radius; // Rayon de la balle
+    // coins de l'astéroïde
+    const asteroidLeft = asteroid.x - asteroid.width / 2;
+    const asteroidRight = asteroid.x + asteroid.width / 2;
+    const asteroidTop = asteroid.y - asteroid.height / 2;
+    const asteroidBottom = asteroid.y + asteroid.height / 2;
   
-    const asteroidX = asteroid.x; // Position x de l'astéroïde
-    const asteroidY = asteroid.y; // Position y de l'astéroïde
-    const asteroidRadius = asteroid.renderers[0].radius; // Rayon de l'astéroïde
+    // coins de la balle
+    const bulletLeft = bullet.x - bullet.width / 2;
+    const bulletRight = bullet.x + bullet.width / 2;
+    const bulletTop = bullet.y - bullet.height / 2;
+    const bulletBottom = bullet.y + bullet.height / 2;
   
-    const distance = Math.sqrt(
-      (bulletX - asteroidX) ** 2 + (bulletY - asteroidY) ** 2
-      ); // Calcul de la distance entre la balle et l'astéroïde
-      
-      if (distance <= bulletRadius + asteroidRadius) {
-        // Collision détectée
-        Game.scene.remove(asteroid);
-        collisionBulletAsteroid(bullet, asteroid);
-      }
+    // Vérifier si les bords de l'astéroïde et de la balle se touchent
+    if (
+      bulletRight >= asteroidLeft &&
+      bulletLeft <= asteroidRight &&
+      bulletBottom >= asteroidTop &&
+      bulletTop <= asteroidBottom
+    ) {
+      // détruire bullet et astéroïde
+      Game.scene.remove(bullet);
+      Game.scene.remove(asteroid);
     }
-    
+    collisionBulletAsteroid(bullet, asteroid);
+  }
+  
     Game.heart1 = new DE.GameObject({
       x: 1600,
       y: 100,
